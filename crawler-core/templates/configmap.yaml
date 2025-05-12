@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: crawler-core-config
+data:
+  SPRING_PROFILE_ACTIVE: "prod"
+  POSTGRES_DB_HOST: "jhineye-postgres-postgresql.jhin-eye.svc.cluster.local"
+  POSTGRES_DB_NAME: "jhineye"
+  POSTGRES_DB_PORT: "5432"
+  POSTGRES_USER: "postgres"
+  FIXED_DELAY_EXPRESSION_CRAWLING: "1800000"
+  KAKAO_REDIRECT_URI: "http://jhineye.store:8080/api/kakao/callback"
+  KAKAO_LOGOUT_REDIRECT_URI: "http://jhineye.store:8080/"

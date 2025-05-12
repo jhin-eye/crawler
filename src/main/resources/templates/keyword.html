@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Keyword Registration</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script th:src="@{/js/main.js}"></script>
+</head>
+<body>
+<h1>Register Keyword</h1>
+<form id="keywordForm" th:action="@{/view/category}" method="post">
+    <input type="text" id="keyword" name="keyword" placeholder="Enter keyword" required />
+    <button type="submit">Register</button>
+</form>
+
+<h2>Registered Keywords</h2>
+<ul>
+    <li th:each="keyword : ${keywords}">
+        <span th:text="${keyword}">Keyword Name</span>
+    </li>
+</ul>
+
+<script>
+    $(document).ready(function() {
+        $('#keywordForm').on('submit', function(event) {
+            event.preventDefault();
+            var keyword = $('#keyword').val();
+            authFetch('/api/keyword', {
+                method: 'POST',
+                body: JSON.stringify({memberId: 1, keyword: keyword})
+            })
+                .then(response => {
+                    if (response.ok) {
+                        return response.text();  // HTML 페이지를 문자열로 가져옴
+                    } else {
+                        console.error('Error:', response.statusText);
+                    }
+                })
+                .then(html => {
+                    if (html) {
+                        document.open();
+                        document.write(html);  // HTML 페이지를 현재 페이지에 작성
+                        document.close();
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        });
+    });
+</script>
+</body>
+</html>

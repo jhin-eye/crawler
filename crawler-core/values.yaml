@@ -1,0 +1,33 @@
+image:
+  repository: yanoos555/crawler-core
+  tag: 0.1.0
+  pullPolicy: IfNotPresent
+
+
+replicaCount: 1
+
+containerPort: 8080
+
+resources:
+  requests:
+    cpu: 300m
+    memory: 512Mi      # 기존
+  limits:
+    cpu: 1000m         # 또는 1
+    memory: 1Gi        # ← 512Mi → 1Gi (또는 그 이상)
+service:
+  type: ClusterIP
+  port: 8080
+
+nodeSelector:
+  eks.amazonaws.com/nodegroup: jhin-eye-nodes
+# values.yaml
+metrics:
+  enabled: true
+  port: 8081
+
+#secrets:
+#  postgresPassword:
+#  jwtSecretKey:
+#  kakaoClientId:
+#  kakaoClientSecret:

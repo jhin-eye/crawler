@@ -1,0 +1,50 @@
+server:
+  port: 8765
+logging:
+  level:
+    root: INFO
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/notice_hub
+    platform: postgres
+    username: postgres
+    password: qwer1234
+  jpa:
+    hibernate:
+      ddl-auto: none
+    open-in-view: false
+    properties:
+      hibernate:
+        show_sql: false
+        default_batch_fetch_size: 100
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        use_sql_comments: true
+        jdbc:
+          time-zone: UTC
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 100MB
+      max-request-size: 100MB
+kakao:
+  host-name: KAKAO
+  client-id: 6bb73a683ffd93e3ebf9512656e9267c
+  client-secret: eIGeH8BixyT9jpc08KrhVms2jjH6nQBI
+  redirect-uri: http://localhost:8765/api/kakao/callback
+  logout-redirect-uri: http://175.114.217.14:8764/
+
+jwt:
+  secret-key: tempsecretkeytempsecretkeytempsecretkeytempsecretkeytempsecretkeytempsecretkeytempsecretkeytempsecretkeytempsecretkeytempsecretkeytempsecretkeytempsecretkeytempsecretkeytempsecretkeytempsecretkeytempsecretkeytempsecretkey
+  access-token-expiration-time: 900000 #60*15*1000
+  refresh-token-expiration-time: 259200000 #60*60*24*3*1000
+
+crawler:
+  is-test: false
+  max-check-page: 3
+  base-package: com.yanoos.crawler.util.finish.test
+
+scheduled:
+  fixedDelay:
+    crawling: "300000"

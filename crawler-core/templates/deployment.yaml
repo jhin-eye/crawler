@@ -1,0 +1,51 @@
+# templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "crawler-core.fullname" . }}
+  annotations:
+    checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+    checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "crawler-core.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "crawler-core.name" . }}
+        release: {{ .Release.Name }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+        {{- if .Values.metrics.enabled }}
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/actuator/prometheus"
+        prometheus.io/port: "{{ .Values.metrics.port }}"
+        {{- end }}
+    spec:
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml .Values.nodeSelector | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: crawler-core
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.containerPort }}
+            - containerPort: {{ .Values.metrics.port }}
+              name: metrics
+          env:
+            - name: JAVA_TOOL_OPTIONS
+              value: "-Xms256m -Xmx512m"
+          envFrom:
+            - configMapRef:
+                name: crawler-core-config
+            - secretRef:
+                name: crawler-core-secret
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
